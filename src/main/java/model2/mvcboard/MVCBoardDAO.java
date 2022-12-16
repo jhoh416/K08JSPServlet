@@ -88,6 +88,36 @@ public class MVCBoardDAO extends DBConnPool{
 		}
 		return board;
 	}
+	
+	//글쓰기 처리시 첨부파일까지 함께 입력한다. 
+	public int insertWrite(MVCBoardDTO dto) {
+		int result = 0;
+		try {
+			/*
+			ofile : 원본파일명
+			sfile : 서버에 저장된 파일명
+			pass : 비회원제 게시판이므로 수정, 삭제를 위한 인증에
+				사용되는 비밀번호
+			*/
+			String query = "INSERT INTO mvcboard ( "
+						+ " idx, name, title, content, ofile, sfile, pass) "
+						+ " VALUES ( "
+						+ " seq_board_num.NEXTAL,?,?,?,?,?,?)";
+			psmt = con.prepareStatement(query);
+			psmt.setString(1, dto.getName());
+			psmt.setString(2, dto.getTitle());
+			psmt.setString(3, dto.getContent());
+			psmt.setString(4, dto.getOfile());
+			psmt.setString(5, dto.getSfile());
+			psmt.setString(6, dto.getPass());
+			result = psmt.executeUpdate();
+		}
+		catch(Exception e) {
+			System.out.println("게시물 입력 중 예외 발생");
+			e.printStackTrace();
+		}
+		return result;
+	}
 }
 
 
